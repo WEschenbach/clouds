@@ -250,7 +250,8 @@ allmat=(matrix(unlist(aperm(data.matrix(allvals))),c(22,8)))
 
 # boxplot ------------------------------------
 resetplot()
-boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"))
+boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"),
+				ylab="Change in CRE from 1°C Surface Warming (Wm-2/°C)")
 abline(h=0)
 gridy()
 boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"),add=T)
