@@ -5,7 +5,7 @@ source("Willis Functions.R")
 
 
 # Load Data -----------------------------------
-load("CERES Maps.tab")
+load("CERES Maps.tab",verbose = T)
 
 
 # Functions ---------------------------------------------
@@ -20,6 +20,13 @@ intarea = function(x, thestep = 10, thevar = allt2_map) {
 		theans = round(sum(temparea * areamatrix, na.rm = T) / sum(areamatrix) * 100, 0)
 	}
 	paste0(theans, "%")
+}
+
+getvals=function(depmap,indmap,theshift=9){
+	cretrendlongsea=squaretrends(depmap*landmask,indmap*landmask,newshift=theshift)*landmask
+	cretrendlongland=squaretrends(depmap*seamask,indmap*seamask,newshift=theshift)*seamask
+	cretrendall=arraymeans(abind(cretrendlongland,cretrendlongsea,along = 3))
+	drawworld(cretrendall,roundto=1)
 }
 
 
@@ -228,3 +235,28 @@ drawcontoursblack(
 	theunits = "W/m2",
 	therot = 180
 )
+
+# boxplot setup --------------------------------------
+
+
+allvals=sapply(1:22,function(i){
+	print(i)
+	depmap=surf_cre_net_tot_years[,,i]
+	indmap=allt2_years[,,i]
+	getvals(depmap,indmap)
+})
+allmat=(matrix(unlist(aperm(data.matrix(allvals))),c(22,8)))
+
+
+# boxplot ------------------------------------
+resetplot()
+boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"))
+abline(h=0)
+gridy()
+boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"),add=T)
+title(sub=paste0(subtextceres),cex.sub=.9,line=2)
+title(main=paste0("Annual Changes in Surface CRE per 1°C Surface Warming, 22 Individual Years\n(Negative values show increased cooling as the surface warms.)"),cex.main=1,line=.8)
+
+# __ ----------------------------------------
+
+
