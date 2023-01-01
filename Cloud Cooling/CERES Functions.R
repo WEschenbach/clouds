@@ -815,6 +815,7 @@ drawworld=
 		# titleline = -1.7,
 		# titlespacing = 1.6,
 		printavgs = TRUE,
+		doplot=TRUE,
 		isweighted = FALSE,
 		printunits = TRUE,
 		theunits = "W/m2",
@@ -931,6 +932,7 @@ drawworld=
 
 	# rotateit ----------------------------------------------------
 	# rotation=0
+	if (doplot==T){
 	therot = 180
 	if (rotation != 0) {
 		# if (rotation>0){
@@ -1084,6 +1086,7 @@ drawworld=
 	title(main = titletext,
 				line = titleline,
 				cex.main = cex.title)
+	}
 	if (oceanonly == TRUE) {
 		gavgland = NaN
 		gavgsea = NaN
@@ -1119,37 +1122,38 @@ drawworld=
 		gavgsea,
 		theunits
 	)
-	if (printavgs) {
-		title(theaverages,
-					line = titleline - titlespacing,
-					cex.main = cex.title)
-	} else {
-		#     mtext(text=theaverages,line=-16, cex=.6,adj=0.5)
+	if (doplot==T) {
+		if (printavgs) {
+			title(theaverages,
+						line = titleline - titlespacing,
+						cex.main = cex.title)
+		} else {
+			#     mtext(text=theaverages,line=-16, cex=.6,adj=0.5)
 
+		}
+		par(mai = c(1.3, .15, 1, .25))
+		title(sub=subtext,cex.sub=subsize,line=subline,font=2)
+		if (plotreset) resetplot()
+		if (drawlogo){
+			ima <- readPNG(paste0("~/Pictures/willis logo 3.png"))
+			(usr=par("usr"))
+			(theleft=usr[1]+logoleft)
+			(thebot=usr[4]-logobot)
+			(thetop=thebot+.30)
+			(theright=theleft+.30)
+			rasterImage(ima,theleft,thebot,theright,thetop)
+		}
+		if (drawqr){
+			ima <- readPNG("~/Pictures/QR Willis 2021 Index.png")
+			(usr=par("usr"))
+			# (theleft=usr[1]+.38)
+			(theleft=usr[2]-.38-.3)
+			(thebot=usr[3]+.69)
+			(thetop=thebot+.35)
+			(theright=theleft+.35)
+			rasterImage(ima,theleft,thebot,theright,thetop)
+		}
 	}
-	par(mai = c(1.3, .15, 1, .25))
-	title(sub=subtext,cex.sub=subsize,line=subline,font=2)
-	if (plotreset) resetplot()
-	if (drawlogo){
-		ima <- readPNG(paste0("~/Pictures/willis logo 3.png"))
-		(usr=par("usr"))
-		(theleft=usr[1]+logoleft)
-		(thebot=usr[4]-logobot)
-		(thetop=thebot+.30)
-		(theright=theleft+.30)
-		rasterImage(ima,theleft,thebot,theright,thetop)
-	}
-	if (drawqr){
-		ima <- readPNG("~/Pictures/QR Willis 2021 Index.png")
-		(usr=par("usr"))
-		# (theleft=usr[1]+.38)
-		(theleft=usr[2]-.38-.3)
-		(thebot=usr[3]+.69)
-		(thetop=thebot+.35)
-		(theright=theleft+.35)
-		rasterImage(ima,theleft,thebot,theright,thetop)
-	}
-
 	invisible(
 		data.frame(
 			gavg = gavg,
