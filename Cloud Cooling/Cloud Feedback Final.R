@@ -6,6 +6,10 @@ source("Willis Functions.R")
 
 # Load Data -----------------------------------
 load("CERES Maps.tab",verbose = T)
+load("allt2 Part 1.tab",verbose = T)
+load("allt2 Part 2.tab",verbose = T)
+load("allt2 Part 3.tab",verbose = T)
+allt2=abind(allt2part1,allt2part2,allt2part3,along=3)
 
 
 # Functions ---------------------------------------------
@@ -26,7 +30,7 @@ getvals=function(depmap,indmap,theshift=9){
 	cretrendlongsea=squaretrends(depmap*landmask,indmap*landmask,newshift=theshift)*landmask
 	cretrendlongland=squaretrends(depmap*seamask,indmap*seamask,newshift=theshift)*seamask
 	cretrendall=arraymeans(abind(cretrendlongland,cretrendlongsea,along = 3))
-	drawworld(cretrendall,roundto=1)
+	drawworld(cretrendall,roundto=1,doplot=F)
 }
 
 
@@ -70,7 +74,7 @@ title(
 		"Scatterplot, ",
 		whichvar,
 		" Surface Temperature versus",
-		"\nSurface Net CRE, 21 Year Averages"
+		"\nSurface Net CRE, 22 Year Averages"
 	),
 	cex.main = 1,
 	line = .8
@@ -125,7 +129,7 @@ title(
 		"Scatterplot, ",
 		whichvar,
 		" Surface Temperature versus",
-		"\nSurface Net CRE, 21 Year Averages"
+		"\nSurface Net CRE, 22 Year Averages"
 	),
 	cex.main = 1,
 	line = .8
@@ -222,7 +226,7 @@ drawcontoursblack(
 # draw net cre ------------------------------------------
 drawworld(
 	surf_cre_net_tot_map,
-	titletext = "Surface Net Cloud Radiative Effect (CRE)\n(Negative values show cooling.)",
+	titletext = "Surface Net Cloud Radiative Effect (CRE), 22 Year Averages\n(Negative values show cooling.)",
 	mincolor = -70,
 	maxcolor = 50,
 	drawlogo = F,
@@ -247,11 +251,9 @@ allvals=sapply(1:22,function(i){
 })
 allmat=(matrix(unlist(aperm(data.matrix(allvals))),c(22,8)))
 
-
 # boxplot ------------------------------------
 resetplot()
-boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"),
-				ylab="Change in CRE from 1°C Surface Warming (Wm-2/°C)")
+boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"))
 abline(h=0)
 gridy()
 boxplot(allmat[,1:8],names=c("Global","NHem","SHem","Land","Sea","Tropics","Arctic","Antarc"),add=T)
@@ -260,4 +262,18 @@ title(main=paste0("Annual Changes in Surface CRE per 1°C Surface Warming, 22 In
 
 # __ ----------------------------------------
 
+# setup ranges ------------------------------------------------------------
 
+theranges = pbapply(allt2, c(1, 2), function(x)
+	diff(range(x)))
+# draw ranges ---------------------------------------------
+drawworld(
+	theranges / ctok(allt2_map) * 100,
+	drawlogo = F,
+	titletext = "Gridcell Monthly Minimum to Maximum Temperature Range\n(percent of mean gridcell temperature, Mar 2000 - Feb 2022)",
+	maxcolor = 26,
+	mincolor = 1,
+	theunits = "%"
+)
+
+# __ ----------------------------------------------------
